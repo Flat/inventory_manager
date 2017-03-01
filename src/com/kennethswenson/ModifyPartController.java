@@ -94,7 +94,7 @@ public class ModifyPartController {
             stage.setScene(new Scene(root));
             stage.showAndWait();
         } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to open new Add window.");
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to open new Modify window.");
             alert.showAndWait();
         }
         return part;

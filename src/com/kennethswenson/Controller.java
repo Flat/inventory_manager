@@ -42,7 +42,7 @@ public class Controller {
         AddPartController apc = new AddPartController();
         int maxPartNum;
         if(parts.isEmpty()){
-            maxPartNum = 0;
+            maxPartNum = 1;
         } else {
             maxPartNum = parts.get(parts.size()-1).getPartID();
         }
@@ -86,6 +86,17 @@ public class Controller {
     }
 
     public void btnAddProduct(ActionEvent actionEvent) {
+        AddProductController apc = new AddProductController();
+        int maxProductNum;
+        if(parts.isEmpty()){
+            maxProductNum = 1;
+        } else {
+            maxProductNum = inventory.getProducts().get(inventory.getProducts().size() - 1).getProductID();
+        }
+        Product result = apc.display(maxProductNum);
+        if (result != null){
+            inventory.addProduct(result);
+        }
     }
 
     public void btnModifyProduct(ActionEvent actionEvent) {
