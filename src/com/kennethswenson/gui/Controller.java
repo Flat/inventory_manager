@@ -1,5 +1,6 @@
-package com.kennethswenson;
+package com.kennethswenson.gui;
 
+import com.kennethswenson.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -42,7 +43,7 @@ public class Controller {
         AddPartController apc = new AddPartController();
         int maxPartNum;
         if(parts.isEmpty()){
-            maxPartNum = 1;
+            maxPartNum = 0;
         } else {
             maxPartNum = parts.get(parts.size()-1).getPartID();
         }
@@ -89,7 +90,7 @@ public class Controller {
         AddProductController apc = new AddProductController();
         int maxProductNum;
         if(parts.isEmpty()){
-            maxProductNum = 1;
+            maxProductNum = 0;
         } else {
             maxProductNum = inventory.getProducts().get(inventory.getProducts().size() - 1).getProductID();
         }
