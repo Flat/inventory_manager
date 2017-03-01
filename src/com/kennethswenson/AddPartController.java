@@ -210,7 +210,7 @@ public class AddPartController {
         } catch (Exception ignored){}
         if (!valid) {
             Alert alert = new Alert(Alert.AlertType.ERROR, sb.toString());
-            alert.getDialogPane().setPrefSize(480, 320);
+            alert.getDialogPane().setPrefSize(320, 250);
             alert.showAndWait();
         }
         return valid;
