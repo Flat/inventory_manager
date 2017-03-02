@@ -89,12 +89,12 @@ public class Controller {
     public void btnAddProduct(ActionEvent actionEvent) {
         AddProductController apc = new AddProductController();
         int maxProductNum;
-        if(parts.isEmpty()){
+        if(inventory.getProducts().isEmpty()){
             maxProductNum = 0;
         } else {
             maxProductNum = inventory.getProducts().get(inventory.getProducts().size() - 1).getProductID();
         }
-        Product result = apc.display(maxProductNum);
+        Product result = apc.display(maxProductNum, parts);
         if (result != null){
             inventory.addProduct(result);
         }
