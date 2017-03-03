@@ -63,7 +63,7 @@
                </columnResizePolicy>
             </TableView>
             <Button mnemonicParsing="false" onAction="#btnSearch" text="Search" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-            <TextField GridPane.columnIndex="6" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+            <TextField fx:id="tbSearch" GridPane.columnIndex="6" GridPane.columnSpan="3" GridPane.rowIndex="1" />
             <Button mnemonicParsing="false" onAction="#btnAddPart" text="Add" GridPane.columnIndex="8" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
             <TextField fx:id="tbId" editable="false" style="-fx-background-color: #ccc;" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
             <TextField fx:id="tbName" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />

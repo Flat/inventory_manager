@@ -97,7 +97,11 @@ public class AddProductController {
     public void btnSave(ActionEvent actionEvent) {
         if(!validate()){
             return;
+        } else {
+            product = new Product(Integer.valueOf(tbId.getText()), tbName.getText(), Double.valueOf(tbPrice.getText()), Integer.valueOf(tbInv.getText()), Integer.valueOf(tbMin.getText()), Integer.valueOf(tbMax.getText()));
         }
+        Stage stage = (Stage)tbId.getScene().getWindow();
+        stage.close();
     }
 
     public Product display(int maxProductId, ObservableList<Part> part){
@@ -147,9 +151,8 @@ public class AddProductController {
             tbName.pseudoClassStateChanged(invalid, false);
         }
         if(tbInv.getText().isEmpty()){
-            tbInv.pseudoClassStateChanged(invalid, true);
-            sb.append("Inv, ");
-            valid = false;
+            tbInv.setText("0");
+            valid = true;
         } else {
             try{
                 Integer.valueOf(tbInv.getText());
@@ -221,6 +224,10 @@ public class AddProductController {
                 valid = false;
             }
         } catch (Exception ignored){}
+        if(addedParts.isEmpty()){
+            valid = false;
+            sb.append("\nProduct must have at least one part");
+        }
         if (!valid) {
             Alert alert = new Alert(Alert.AlertType.ERROR, sb.toString());
             alert.getDialogPane().setPrefSize(320, 250);
