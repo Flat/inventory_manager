@@ -1,8 +1,6 @@
 package com.kennethswenson;
 
 
-import javafx.scene.control.Alert;
-
 import java.util.ArrayList;
 
 public class Product {
@@ -65,6 +63,10 @@ public class Product {
                 }
             }
         }
+    }
+
+    public boolean hasParts(){
+        return !parts.isEmpty();
     }
 
     public int getProductID() {

@@ -1,25 +1,24 @@
-package com.kennethswenson;
+package com.kennethswenson.gui;
 
-
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
+import com.kennethswenson.Inhouse;
+import com.kennethswenson.Outsourced;
+import com.kennethswenson.Part;
 import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class AddProductController {
+public class ModifyPartController {
     @FXML
     private TextField tbId;
     @FXML
@@ -29,113 +28,92 @@ public class AddProductController {
     @FXML
     private TextField tbPrice;
     @FXML
-    private TextField tbMin;
-    @FXML
     private TextField tbMax;
     @FXML
-    private TextField tbSearch;
+    private TextField tbMin;
     @FXML
-    private TableView<Part> tvUnaddedParts;
+    private TextField tbManufac;
     @FXML
-    private TableView<Part> tvAddedParts;
+    private RadioButton radioInHouse;
     @FXML
-    private TableColumn<Part, String> colPartIdUnadded;
+    private RadioButton radioOutsourced;
     @FXML
-    private TableColumn<Part, String> colPartNameUnadded;
-    @FXML
-    private TableColumn<Part, String> colPartInvUnadded;
-    @FXML
-    private TableColumn<Part, String> colPartPriceUnadded;
-    @FXML
-    private TableColumn<Part, String> colPartIdAdded;
-    @FXML
-    private TableColumn<Part, String> colPartNameAdded;
-    @FXML
-    private TableColumn<Part, String> colPartInvAdded;
-    @FXML
-    private TableColumn<Part, String> colPartPriceAdded;
+    private Label lblManufacLoc;
 
+    private static Part part = null;
 
-    private static Product product = null;
-    private static int autoNum = 0;
-    private static ObservableList<Part> parts = FXCollections.observableArrayList();
-    private ObservableList<Part> addedParts = FXCollections.observableArrayList();
-
-
-    public void btnSearch(ActionEvent actionEvent) {
-        FilteredList<Part> filteredParts = new FilteredList<Part>(parts, p -> true);
-        filteredParts.setPredicate(part -> tbSearch.getText().isEmpty() || part.getName().toUpperCase().contains(tbSearch.getText().toUpperCase()));
-        SortedList<Part> sortedParts = new SortedList<Part>(filteredParts);
-        sortedParts.comparatorProperty().bind(tvUnaddedParts.comparatorProperty());
-        tvUnaddedParts.setItems(sortedParts);
-    }
-
-    public void btnAddPart(ActionEvent actionEvent) {
-        Part toAdd = tvUnaddedParts.getSelectionModel().getSelectedItem();
-        if(toAdd != null){
-            addedParts.add(toAdd);
-            parts.remove(toAdd);
+    @FXML
+    private void initialize(){
+        if(part != null){
+            tbId.setText(String.valueOf(part.getPartID()));
+            tbName.setText(part.getName());
+            tbInv.setText(String.valueOf(part.getInstock()));
+            tbPrice.setText(String.valueOf(part.getPrice()));
+            tbMax.setText(String.valueOf(part.getMax()));
+            tbMin.setText(String.valueOf(part.getMin()));
+            if(part instanceof Inhouse){
+               tbManufac.setText(String.valueOf(((Inhouse) part).getMachineID()));
+               radioInHouse.setSelected(true);
+               radioOutsourced.setSelected(false);
+            } else {
+                tbManufac.setText(((Outsourced) part).getCompanyName());
+                radioInHouse.setSelected(false);
+                radioOutsourced.setSelected(true);
+            }
         }
     }
 
-    public void btnDelPart(ActionEvent actionEvent) {
-        Part toDel = tvAddedParts.getSelectionModel().getSelectedItem();
-        if(toDel != null){
-            addedParts.remove(toDel);
-            parts.add(toDel);
+    @FXML
+    public void handleInHouse(ActionEvent actionEvent) {
+        if (radioInHouse.isSelected()){
+            lblManufacLoc.setText("Machine ID");
+        } else {
+            lblManufacLoc.setText("Company Name");
+        }
+    }
+
+    @FXML
+    public void handleOutsourced(ActionEvent actionEvent) {
+        if (radioOutsourced.isSelected()){
+            lblManufacLoc.setText("Company Name");
+        } else {
+            lblManufacLoc.setText("Machine ID");
         }
     }
 
     public void btnCancel(ActionEvent actionEvent) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to cancel? ");
-        alert.showAndWait().filter(response -> response == ButtonType.OK).ifPresent(response ->{
-            Stage stage = (Stage)tbId.getScene().getWindow();
-            product = null;
-            stage.close();});
-    }
-
-    public void btnSave(ActionEvent actionEvent) {
-        if(!validate()){
-            return;
-        } else {
-            product = new Product(Integer.valueOf(tbId.getText()), tbName.getText(), Double.valueOf(tbPrice.getText()), Integer.valueOf(tbInv.getText()), Integer.valueOf(tbMin.getText()), Integer.valueOf(tbMax.getText()));
-        }
         Stage stage = (Stage)tbId.getScene().getWindow();
+        part = null;
         stage.close();
     }
 
-    public Product display(int maxProductId, ObservableList<Part> part){
-        autoNum = maxProductId + 1;
-        parts = part;
+    public Part display(Part partToEdit){
+        part = partToEdit;
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("gui/add_product.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("modify_part.fxml"));
             Stage stage = new Stage();
-            stage.setTitle("Add Product");
+            stage.setTitle("Modify Part");
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(new Scene(root));
             stage.showAndWait();
         } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to open new Add window.");
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to open new Modify window.");
             alert.showAndWait();
         }
-        return product;
+        return part;
     }
 
-    @FXML
-    private void initialize(){
-        tbId.setText(String.valueOf(autoNum));
-        tvUnaddedParts.setItems(parts);
-        colPartIdUnadded.setCellValueFactory(new PropertyValueFactory<>("partID"));
-        colPartNameUnadded.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colPartInvUnadded.setCellValueFactory(new PropertyValueFactory<>("instock"));
-        colPartPriceUnadded.setCellValueFactory(new PropertyValueFactory<>("price"));
-        tvAddedParts.setItems(addedParts);
-        colPartIdAdded.setCellValueFactory(new PropertyValueFactory<>("partID"));
-        colPartNameAdded.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colPartInvAdded.setCellValueFactory(new PropertyValueFactory<>("instock"));
-        colPartPriceAdded.setCellValueFactory(new PropertyValueFactory<>("price"));
-
+    public void btnSave(ActionEvent actionEvent){
+        if(!validate()){
+            return;
+        }
+        if (radioInHouse.isSelected()) {
+            part = new Inhouse(tbName.getText(), Integer.valueOf(tbId.getText()), Double.valueOf(tbPrice.getText()), Integer.valueOf(tbInv.getText()),Integer.valueOf(tbMin.getText()), Integer.valueOf(tbMax.getText()), Integer.valueOf(tbManufac.getText()));
+        } else {
+            part = new Outsourced(tbName.getText(), Integer.valueOf(tbId.getText()), Double.valueOf(tbPrice.getText()), Integer.valueOf(tbInv.getText()),Integer.valueOf(tbMin.getText()), Integer.valueOf(tbMax.getText()), tbManufac.getText());
+        }
+        Stage stage = (Stage)tbId.getScene().getWindow();
+        stage.close();
     }
 
     private boolean validate(){
@@ -151,8 +129,9 @@ public class AddProductController {
             tbName.pseudoClassStateChanged(invalid, false);
         }
         if(tbInv.getText().isEmpty()){
-            tbInv.setText("0");
-            valid = true;
+            tbInv.pseudoClassStateChanged(invalid, true);
+            sb.append("Inv, ");
+            valid = false;
         } else {
             try{
                 Integer.valueOf(tbInv.getText());
@@ -205,6 +184,30 @@ public class AddProductController {
                 valid = false;
             }
         }
+        if(radioInHouse.isSelected()) {
+            if(tbManufac.getText().isEmpty()){
+                tbManufac.pseudoClassStateChanged(invalid, true);
+                valid = false;
+                sb.append("Machine ID, ");
+            } else {
+                try{
+                    Integer.valueOf(tbManufac.getText());
+                    tbManufac.pseudoClassStateChanged(invalid, false);
+                } catch (NumberFormatException e) {
+                    tbManufac.pseudoClassStateChanged(invalid, true);
+                    valid = false;
+                    sb.append("Machine ID, ");
+                }
+            }
+        } else {
+            if(tbManufac.getText().isEmpty()){
+                tbManufac.pseudoClassStateChanged(invalid, true);
+                valid = false;
+                sb.append("Company Name, ");
+            } else {
+                tbManufac.pseudoClassStateChanged(invalid, false);
+            }
+        }
         if(sb.toString().contains(", ")) {
             sb.replace(sb.lastIndexOf(","), sb.lastIndexOf(",") + 1, ".");
         }
@@ -224,10 +227,6 @@ public class AddProductController {
                 valid = false;
             }
         } catch (Exception ignored){}
-        if(addedParts.isEmpty()){
-            valid = false;
-            sb.append("\nProduct must have at least one part");
-        }
         if (!valid) {
             Alert alert = new Alert(Alert.AlertType.ERROR, sb.toString());
             alert.getDialogPane().setPrefSize(320, 250);

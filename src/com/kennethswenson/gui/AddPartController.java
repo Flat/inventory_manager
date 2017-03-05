@@ -1,21 +1,21 @@
-package com.kennethswenson;
+package com.kennethswenson.gui;
 
+import com.kennethswenson.Inhouse;
+import com.kennethswenson.Outsourced;
+import com.kennethswenson.Part;
 import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class ModifyPartController {
+public class AddPartController {
     @FXML
     private TextField tbId;
     @FXML
@@ -38,26 +38,11 @@ public class ModifyPartController {
     private Label lblManufacLoc;
 
     private static Part part = null;
+    private static int autoNum = 1;
 
     @FXML
     private void initialize(){
-        if(part != null){
-            tbId.setText(String.valueOf(part.getPartID()));
-            tbName.setText(part.getName());
-            tbInv.setText(String.valueOf(part.getInstock()));
-            tbPrice.setText(String.valueOf(part.getPrice()));
-            tbMax.setText(String.valueOf(part.getMax()));
-            tbMin.setText(String.valueOf(part.getMin()));
-            if(part instanceof Inhouse){
-               tbManufac.setText(String.valueOf(((Inhouse) part).getMachineID()));
-               radioInHouse.setSelected(true);
-               radioOutsourced.setSelected(false);
-            } else {
-                tbManufac.setText(((Outsourced) part).getCompanyName());
-                radioInHouse.setSelected(false);
-                radioOutsourced.setSelected(true);
-            }
-        }
+        tbId.setText(String.valueOf(autoNum));
     }
 
     @FXML
@@ -79,28 +64,30 @@ public class ModifyPartController {
     }
 
     public void btnCancel(ActionEvent actionEvent) {
-        Stage stage = (Stage)tbId.getScene().getWindow();
-        part = null;
-        stage.close();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to cancel? ");
+        alert.showAndWait().filter(response -> response == ButtonType.OK).ifPresent(response ->{
+            Stage stage = (Stage)tbId.getScene().getWindow();
+            part = null;
+            stage.close();});
     }
 
-    public Part display(Part partToEdit){
-        part = partToEdit;
+    public Part display(int maxPartId){
+        autoNum = maxPartId + 1;
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("gui/modify_part.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("add_part.fxml"));
             Stage stage = new Stage();
-            stage.setTitle("Modify Part");
+            stage.setTitle("Add Part");
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(new Scene(root));
             stage.showAndWait();
         } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to open new Modify window.");
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to open new Add window.");
             alert.showAndWait();
         }
         return part;
     }
 
-    public void btnSave(ActionEvent actionEvent){
+    public void btnAdd(ActionEvent actionEvent){
         if(!validate()){
             return;
         }

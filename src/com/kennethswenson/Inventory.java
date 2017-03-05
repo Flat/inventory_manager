@@ -51,6 +51,18 @@ public class Inventory {
         }
     }
 
+    public int size(){
+        return products.size();
+    }
+
+    public int nextProdId(){
+        if (products.size() != 0){
+            return products.get(size() - 1).getProductID();
+        } else {
+            return 0;
+        }
+    }
+
     public ObservableList<Product> getProducts() {
         return products;
     }

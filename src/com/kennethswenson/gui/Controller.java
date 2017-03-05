@@ -1,14 +1,16 @@
 package com.kennethswenson.gui;
 
-import com.kennethswenson.*;
+import com.kennethswenson.Inventory;
+import com.kennethswenson.Part;
+import com.kennethswenson.Product;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.event.ActionEvent;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 
@@ -92,9 +94,9 @@ public class Controller {
         if(inventory.getProducts().isEmpty()){
             maxProductNum = 0;
         } else {
-            maxProductNum = inventory.getProducts().get(inventory.getProducts().size() - 1).getProductID();
+            maxProductNum = inventory.nextProdId();
         }
-        Product result = apc.display(maxProductNum, parts);
+        Product result = apc.display(maxProductNum, FXCollections.observableArrayList(parts));
         if (result != null){
             inventory.addProduct(result);
         }
@@ -104,9 +106,15 @@ public class Controller {
     }
 
     public void btnDelProduct(ActionEvent actionEvent) {
-        Product toDel = productTable.getSelectionModel().getSelectedItem();
+                Product toDel = productTable.getSelectionModel().getSelectedItem();
         if(toDel != null){
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete Product with ID: " + String.valueOf(toDel.getProductID()));
+            StringBuilder sbConfirmationText = new StringBuilder();
+            sbConfirmationText.append("Are you sure you want to delete Product with ID: ");
+            sbConfirmationText.append(String.valueOf(toDel.getProductID()));
+            if (toDel.hasParts()){
+                sbConfirmationText.append("\nThis product still has parts assigned!");
+            }
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, sbConfirmationText.toString());
             alert.showAndWait().filter(response -> response == ButtonType.OK).ifPresent(response -> {
                 inventory.removeProduct(toDel.getProductID());
                 productTable.setItems(inventory.getProducts());
