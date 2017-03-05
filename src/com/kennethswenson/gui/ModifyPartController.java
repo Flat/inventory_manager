@@ -43,7 +43,7 @@ public class ModifyPartController {
     private static Part part = null;
 
     @FXML
-    private void initialize(){
+    public void initialize(){
         if(part != null){
             tbId.setText(String.valueOf(part.getPartID()));
             tbName.setText(part.getName());

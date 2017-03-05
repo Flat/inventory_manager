@@ -19,8 +19,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Iterator;
 
-public class AddProductController {
+public class ModifyProductController {
     @FXML
     private TextField tbId;
     @FXML
@@ -108,11 +109,12 @@ public class AddProductController {
         stage.close();
     }
 
-    public Product display(int maxProductId, ObservableList<Part> part){
-        autoNum = maxProductId + 1;
+    public Product display(Product toUpdate, ObservableList<Part> part){
+        autoNum = toUpdate.getProductID();
+        product = toUpdate;
         parts = part;
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("add_product.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("modify_product.fxml"));
             Stage stage = new Stage();
             stage.setTitle("Add Product");
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -128,7 +130,21 @@ public class AddProductController {
 
     @FXML
     public void initialize(){
-        tbId.setText(String.valueOf(autoNum));
+        if(product != null){
+            tbId.setText(String.valueOf(autoNum));
+            tbName.setText(product.getName());
+            tbInv.setText(String.valueOf(product.getInstock()));
+            tbPrice.setText(String.valueOf(product.getPrice()));
+            tbMax.setText(String.valueOf(product.getMax()));
+            tbMin.setText(String.valueOf(product.getMin()));
+            addedParts = product.getParts();
+            for (Iterator<Part> p = parts.iterator(); p.hasNext();) {
+                if(addedParts.contains(p)){
+                    p.next();
+                    p.remove();
+                }
+            }
+        }
         tvUnaddedParts.setItems(parts);
         colPartIdUnadded.setCellValueFactory(new PropertyValueFactory<>("partID"));
         colPartNameUnadded.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -139,7 +155,6 @@ public class AddProductController {
         colPartNameAdded.setCellValueFactory(new PropertyValueFactory<>("name"));
         colPartInvAdded.setCellValueFactory(new PropertyValueFactory<>("instock"));
         colPartPriceAdded.setCellValueFactory(new PropertyValueFactory<>("price"));
-
     }
 
     private boolean validate(){

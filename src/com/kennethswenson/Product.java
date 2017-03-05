@@ -1,6 +1,9 @@
 package com.kennethswenson;
 
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.util.ArrayList;
 
 public class Product {
@@ -63,6 +66,10 @@ public class Product {
                 }
             }
         }
+    }
+
+    public ObservableList<Part> getParts(){
+        return FXCollections.observableArrayList(parts);
     }
 
     public boolean hasParts(){

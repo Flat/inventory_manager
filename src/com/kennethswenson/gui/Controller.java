@@ -70,7 +70,6 @@ public class Controller {
                 parts.remove(toEdit);
             }
         }
-
     }
 
     public void btnDelPart(ActionEvent actionEvent) {
@@ -103,6 +102,17 @@ public class Controller {
     }
 
     public void btnModifyProduct(ActionEvent actionEvent) {
+        ModifyProductController mpc = new ModifyProductController();
+        Product selection = productTable.getSelectionModel().getSelectedItem();
+        if(selection != null){
+            Product toEdit = inventory.lookupProduct(selection.getProductID());
+            if(toEdit != null){
+                Product edited = mpc.display(toEdit, FXCollections.observableArrayList(parts));
+                if(edited != null){
+                    inventory.updateProduct(toEdit.getProductID(), edited);
+                }
+            }
+        }
     }
 
     public void btnDelProduct(ActionEvent actionEvent) {

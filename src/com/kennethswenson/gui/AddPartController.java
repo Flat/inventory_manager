@@ -41,7 +41,7 @@ public class AddPartController {
     private static int autoNum = 1;
 
     @FXML
-    private void initialize(){
+    public void initialize(){
         tbId.setText(String.valueOf(autoNum));
     }
 
