@@ -138,10 +138,9 @@ public class ModifyProductController {
             tbMax.setText(String.valueOf(product.getMax()));
             tbMin.setText(String.valueOf(product.getMin()));
             addedParts = product.getParts();
-            for (Iterator<Part> p = parts.iterator(); p.hasNext();) {
-                if(addedParts.contains(p)){
-                    p.next();
-                    p.remove();
+            for (Part part: addedParts) {
+                if(parts.contains(part)){
+                    parts.remove(part);
                 }
             }
         }

@@ -30,6 +30,8 @@ public class Controller {
     @FXML
     private TextField tbSearchPart;
     @FXML
+    private TextField tbSearchProduct;
+    @FXML
     private TableView<Product> productTable;
     @FXML
     private TableColumn<Part, String> colProductId;
@@ -134,14 +136,14 @@ public class Controller {
 
     public void btnProductSearch(ActionEvent actionEvent) {
         FilteredList<Product> filteredProducts = new FilteredList<Product>(inventory.getProducts(), p -> true);
-        filteredProducts.setPredicate(product -> tbSearchPart.getText().isEmpty() || product.getName().toUpperCase().contains(tbSearchPart.getText().toUpperCase()));
+        filteredProducts.setPredicate(product -> tbSearchProduct.getText().isEmpty() || product.getName().toUpperCase().contains(tbSearchProduct.getText().toUpperCase()));
         SortedList<Product> sortedProducts = new SortedList<Product>(filteredProducts);
         sortedProducts.comparatorProperty().bind(productTable.comparatorProperty());
         productTable.setItems(sortedProducts);
     }
 
     @FXML
-    private void initialize() {
+    public void initialize() {
         partTable.setItems(parts);
         colPartId.setCellValueFactory(new PropertyValueFactory<>("partID"));
         colPartName.setCellValueFactory(new PropertyValueFactory<>("name"));
