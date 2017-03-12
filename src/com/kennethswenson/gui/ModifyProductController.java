@@ -252,7 +252,7 @@ public class ModifyProductController {
                 totalPartsCost += part.getPrice();
             }
             try{
-                if(Integer.valueOf(tbPrice.getText()) < totalPartsCost){
+                if(Double.valueOf(tbPrice.getText()) < totalPartsCost){
                     valid = false;
                     sb.append("\nProduct cost must be more than the cost of the parts associated");
                     tbPrice.pseudoClassStateChanged(invalid, true);
